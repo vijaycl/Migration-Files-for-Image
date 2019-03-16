@@ -1,0 +1,58 @@
+id: program_image
+label: Image associated to academic programs.
+migration_group: c11n
+migration_tags:
+  - academic program
+  - file
+  - image
+source:
+  plugin: csv
+  path: 
+  header_row_count: 1
+
+  keys:
+    - Image file
+  
+  fields:
+    Image file: Name of the image file associated with the program.
+  
+  constants:
+    file_source_uri: home/beauty/Pictures
+    file_dest_uri: 'public://program/image'
+
+destination:
+  
+  plugin: 'entity:file'
+
+process:
+  file_source:
+    -
+      plugin: concat
+      delimiter: /
+      source:
+        - constants/file_source_uri
+        - Image file
+    
+    -
+      plugin: urlencode
+  file_dest:
+    -
+      plugin: concat
+      delimiter: /
+      source:
+        - constants/file_dest_uri
+        - Image file
+  
+    -
+      plugin: urlencode
+ 
+  filename: Image file
+  uri:
+    plugin: file_copy
+    source:
+      - '@file_source'
+      - '@file_dest'
+
+dependencies:
+ required: {}
+  optional: {}
